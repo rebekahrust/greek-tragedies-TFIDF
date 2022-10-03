@@ -1,5 +1,5 @@
 # greek-tragedies-TFIDF
-December 2016 project analyzing term frequency in extant ancient Greek tragedies
+December 2016 project analyzing term frequency in extant ancient Greek tragedies.
 ## Introduction
 I have modeled my project on a standard basic level NLP project: calculate TF-IDF, convert the word frequencies into vectors, compare the similarities between vectors using both Euclidean distance and cosine similarity, and plot the results. I have relied heavily upon the Classical Language Toolkit, its documentation, and sample code created by Kyle Johnson, Patrick Burns, et al.. The tutorials, code, and methodology of Allen Riddell were very helpful for the vectoring stages. StackOverflow has been immensely helpful throughout.
 
