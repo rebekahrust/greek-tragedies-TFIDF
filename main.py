@@ -1,3 +1,7 @@
+#main module for TF-IDF analysis for ancient Greek plays
+
+#Imports
+
 import os
 import logging
 import bleach
@@ -19,12 +23,16 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 lemmatizer = LemmaReplacer('greek')
 
 
+#Function Definitions
+
 def create_dictionary_of_works(perseus_directory_path):
     # Each Author has their own directory entry so the list of authors is equal to the directory list.
     # we remove entries that have a period in them because they are system folders and files we do not want.
+    
     authors = [folder_directory for folder_directory in os.listdir(perseus_directory_path) if
                folder_directory.find('.') == -1]
     greekworks = dict()
+    
     # Now we get the files for each folder(i.e. author).
     for author in authors:
         # We create a dictionary entry for Author.
@@ -39,6 +47,7 @@ def create_dictionary_of_works(perseus_directory_path):
 
 # The following functions are used to process the XML formatted greek plays
 #
+#The following is an example of the XML format:
 # <sp>
 #    <speaker>*)aqh/na</speaker>
 #    <l>a)ei\ me/n, w)= pai= *larti/ou, de/dorka/ se</l>
@@ -72,6 +81,7 @@ def handleSpeaker(speaker):
     except IndexError:
         speaker_unicode = 'unknown'
         print("========> Speaker is Missing")
+        
     # extract and process the speakers <l> lines
     retvalue = handleLines(speaker.getElementsByTagName("l"))
     retvalue['speaker'] = speaker_unicode
@@ -108,6 +118,7 @@ def handleLines(lines):
 
     # convert to clean UNICODE
     chunk = clean_text(chunk)
+    
     # create dictionary entry
     return (dict(start_line=starting_line_number, end_line=line_number, text=chunk))
 
@@ -125,15 +136,19 @@ def getText(nodelist):
 def clean_text(text_to_clean):
     r = Replacer()
     upper_case_beta_code_test = bleach.clean(text_to_clean, strip=True).upper()
+    
     # If we don't get rid of periods and semicolons before lemmatizing, there will be some words that won't properly be lemmatized.
     upper_case_beta_code_test = upper_case_beta_code_test.replace(".", " ")
     upper_case_beta_code_test = upper_case_beta_code_test.replace(";", " ")
     unicode_converted = r.beta_code(upper_case_beta_code_test)
+    
     # Lemmatize
     lemmatized_unicode = lemmatizer.lemmatize(unicode_converted.lower(), return_string=True)
+    
     # Sentence Tokenization
     tokenizer = TokenizeSentence('greek')
     tokenized_lemmatized_unicode = tokenizer.tokenize_sentences(lemmatized_unicode)
+    
     # Stopword Filtering
     # This removes words that are so common, they'll appear in every text and therefore are not useful for determining the unique semantics of a play.
     p = PunktLanguageVars()
